@@ -1,5 +1,6 @@
 package application;
 
+import javax.persistence.*;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -7,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Timestamp;
 
 
 @WebServlet(name = "login", value = "/login")
@@ -26,6 +28,7 @@ public class login extends HttpServlet
 	{
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
+		User user = new User();
 		try
 		{
 			String destPage = "index.jsp";
@@ -45,8 +48,27 @@ public class login extends HttpServlet
 			}
 			if (!username.isEmpty() && !password.isEmpty())
 			{
-
-				if ((username.equals("Test")) && (password.equals("Test")))
+				EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
+				EntityManager entityManager = entityManagerFactory.createEntityManager();
+				EntityTransaction transaction = entityManager.getTransaction();
+				try
+				{
+					transaction.begin();
+					TypedQuery<User> userFromDB = entityManager.createNamedQuery("getUserByUsername",User.class);
+					userFromDB.setParameter(1,username);
+					user = userFromDB.getSingleResult();
+					transaction.commit();
+				}
+				finally
+				{
+					if(transaction.isActive())
+					{
+						transaction.rollback();
+					}
+					entityManager.close();
+					entityManagerFactory.close();
+				}
+				if (password.equals(user.getPassword()))
 				{
 					//response.sendRedirect(request.getContextPath() + "/home.jsp");
 					destPage = "home.jsp";

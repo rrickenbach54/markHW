@@ -4,10 +4,11 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@NamedQuery(name = "maxID",query = "SELECT e FROM User e WHERE e.userId = MAX(User.userId)")
+@Table(name= "user")
+@NamedQuery(name = "getUserByUsername", query = "SELECT person FROM User person WHERE person.username = ?1")
 public class User
 {
-
+	private Integer userId;
 	private String username;
 	private String firstName;
 	private String lastName;
@@ -18,12 +19,12 @@ public class User
 
 	@Id
 	@Column(name = "user_id")
-	@GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	private Integer userId;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Integer getUserId()
 	{
 		return userId;
 	}
+
 	public void setUserId(Integer userId)
 	{
 		this.userId = userId;

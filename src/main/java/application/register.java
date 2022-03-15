@@ -34,6 +34,11 @@ public class register extends HttpServlet
 		String email = request.getParameter("email");
 		boolean match = false;
 		boolean validUser = false;
+		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		EntityTransaction transaction = entityManager.getTransaction();
+		User user = new User();
+
 		try
 		{
 			String destPage = "register.jsp";
@@ -43,6 +48,33 @@ public class register extends HttpServlet
 			}
 			else
 			{
+				try
+				{
+					transaction.begin();
+					TypedQuery<User> userFromDB = entityManager.createNamedQuery("getUserByUsername",User.class);
+					userFromDB.setParameter(1,username);
+					user = userFromDB.getSingleResult();
+					transaction.commit();
+				}
+				finally
+				{
+					if(transaction.isActive())
+					{
+						transaction.rollback();
+					}
+					entityManager.close();
+					entityManagerFactory.close();
+				}
+				if (user != null)
+				{
+					request.setAttribute("username_err","Username already exists");
+					request.setAttribute("username",username);
+				}
+				else
+				{
+					request.setAttribute("username",username);
+					validUser = true;
+				}
 				//if(user.getUsername().length() > 0)
 				//{
 				//	request.setAttribute("username_err","Username already exists");
@@ -50,8 +82,6 @@ public class register extends HttpServlet
 				//}
 				//else
 				//{
-					request.setAttribute("username",username);
-					validUser = true;
 				//}
 				//Will have to look at persistence still on if a check should be made for an existing user here or just before trying to create a user.
 			}
@@ -103,21 +133,15 @@ public class register extends HttpServlet
 				//If validation for a username not already existing (based on username) then create.
 				//Create DB user here
 				destPage = "index.jsp";
-				int userID = getMaxUserID();
-				EntityManagerFactory entityManagerFactory = javax.persistence.Persistence.createEntityManagerFactory("default");
-				EntityManager entityManager = entityManagerFactory.createEntityManager();
-				EntityTransaction transaction = entityManager.getTransaction();
-
 				try
 				{
 					transaction.begin();
-					User user = new User();
 					user.setUsername(username);
 					user.setFirstName(fname);
 					user.setLastName(lname);
 					user.setEmail(email);
 					user.setPassword(password);
-					//user.setCreateTime(new Timestamp(System.currentTimeMillis()));
+					user.setCreateTime(new Timestamp(System.currentTimeMillis()));
 					entityManager.persist(user);
 					transaction.commit();
 				}
@@ -147,33 +171,6 @@ public class register extends HttpServlet
 		}
 	}
 
-	private int getMaxUserID()
-	{
-		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
-		EntityTransaction transaction = entityManager.getTransaction();
-		int maxUser = 0;
-		try
-		{
-			transaction.begin();
-			TypedQuery<User> maxUserID = entityManager.createNamedQuery("maxID",User.class);
-			for(User user : maxUserID.getResultList())
-			{
-				maxUser = user.getUserId();
-			}
-			transaction.commit();
-		}
-		finally
-		{
-			if(transaction.isActive())
-			{
-				transaction.rollback();
-			}
-			entityManager.close();
-			entityManagerFactory.close();
-		}
-		return maxUser + 1;
-	}
 
 	public void destroy()
 	{
