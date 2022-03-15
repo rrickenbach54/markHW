@@ -1,0 +1,223 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
+
+body{
+	background-color: black;
+	color: white;
+	align-content: center;
+}
+
+.frmLogin {
+	display: block;
+	margin: 100px auto;
+	width: 600px;
+	align-content: center;
+	font-family: 'Roboto Light', sans-serif ;
+	font-size: 15px;
+}
+
+.frmLoginRow {
+	display: flex;
+}
+
+.frmLoginColumn {
+	flex: 50%;
+	padding: 10px;
+	text-align: center;
+}
+
+.lblLogin {
+	height: 30px;
+	display: inline-block;
+	color: #f5f0ff;
+}
+.spnError {
+	display: block;
+	margin: 0 0 0 10px;
+	font-size: .75em;
+	color: #f00;
+	width: 240px;
+	height: 15px;
+}
+
+.inputLogin {
+	display: inline-block;
+	align-content: center;
+	width: 580px;
+	margin: 0 10px 0 10px;
+}
+.lblLogin {
+	margin: 0 0 0 10px;
+}
+.divLayout {
+	background-color: #000;
+	width: 100%;
+	height: 50px;
+}
+.submitLogin {
+	margin: 25px 0 10px 10px;
+	padding: 10px;
+}
+
+.lblLoginHeader {
+	font-size: 1.5em;
+	display: block;
+	text-align: center;
+	border-radius: .3em .3em 0 0;
+	width: 100%;
+	height: 40px;
+	margin: 0 0 10px 0;
+	color: #f5f0ff;
+
+}
+
+.container {
+	background-color: #000;
+	width: auto;
+	height: 52px;
+	margin: -16px -8px 0 -8px;
+}
+
+.container li a {
+	color: #FFF;
+	text-decoration: none;
+	padding: 15px;
+}
+
+.container li a:hover, .ulDropDownNav li:hover {
+	text-decoration: none;
+}
+
+.container li:hover {
+	background-color: #FE7300;
+}
+
+.container li {
+	display: inline-block;
+	height: 35px;
+	padding-top: 13px;
+	z-index: 4;
+	border: solid 2px #000;
+}
+
+.container .liNavLog {
+	float: right;
+	margin-right: 50px;
+}
+.bodyContainer {
+	width: auto;
+	margin: 50px;
+	align-content: center;
+}
+
+form label {
+	display: block;
+}
+
+.divDropDown {
+	display: none;
+	width: 225px;
+	background-color: transparent;
+	margin-left: 75px;
+}
+
+.liDropDownNav:hover .divDropDown, .divDropDown:hover {
+	position: absolute;
+	display: inline-block;
+	height: auto;
+	margin: 35px 0 0 -150px;
+	padding-bottom: 15px;
+}
+
+/*css declaration only for Chrome/Safari*/
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	.liDropDownNav:hover .divDropDown, .divDropDown:hover {
+		margin: 17px 0 0 -80px;
+	}
+}
+
+.divDropDown li {
+	width: 225px;
+	z-index: 1;
+	color: #FFF;
+	background-color: black;
+}
+
+form input {
+	width: 400px;
+	height: 51px;
+	font-size: 1.5em;
+	margin-bottom: 10px;
+	padding-left: 5px;
+	border-radius: .3em;
+}
+
+form input:focus {
+	border-color: #2225A5;
+	border-width: 3px;
+	border-radius: .3em;
+}
+
+.formTextInput {
+	border: solid 1px;
+	padding: 10px;
+	width: 400px;
+	border-radius: .5em;
+}
+
+form label {
+	font-weight: bold;
+}
+
+form select {
+	width: 205px;
+	height: 51px;
+	font-size: 1.1em;
+	margin-bottom: 10px;
+	border-radius: .3em;
+}
+
+.buttonActivated {
+	font-size: 2em;
+	min-width: 580px;
+	border: none;
+	width: auto;
+	height: 52px;
+	color: #110E2D;
+	background-color: white;
+}
+
+.buttonActivated:hover {
+	cursor: pointer;
+	background-color: #808080;
+}
+
+.buttonActivated:active {
+	cursor: pointer;
+	background-color: #C0C0C0;
+}
+
+.center {
+	margin: 0 auto;
+	width: 30em;
+	font-family: 'Times New Roman', sans-serif;
+	font-size: 150%;
+}
+
+.center-justified {
+	text-align: justify;
+	margin: 0 auto;
+	width: 30em;
+	line-height: 50%;
+}
+.centerImage {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
+	border: 1px solid #605D7C;
+}
+
+.centerImage {
+	width: 400px;
+	height: auto;
+}
