@@ -1,5 +1,7 @@
 package application;
 
+import org.hibernate.SessionFactory;
+
 import javax.persistence.*;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -14,6 +16,10 @@ import java.sql.Timestamp;
 @WebServlet(name = "login", value = "/login")
 public class login extends HttpServlet
 {
+	EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
+	EntityManager entityManager = entityManagerFactory.createEntityManager();
+	EntityTransaction transaction = entityManager.getTransaction();
+
 	public login()
 	{
 		super();
@@ -48,9 +54,8 @@ public class login extends HttpServlet
 			}
 			if (!username.isEmpty() && !password.isEmpty())
 			{
-				EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
-				EntityManager entityManager = entityManagerFactory.createEntityManager();
-				EntityTransaction transaction = entityManager.getTransaction();
+				entityManager.clear();
+
 				try
 				{
 					transaction.begin();
@@ -65,12 +70,9 @@ public class login extends HttpServlet
 					{
 						transaction.rollback();
 					}
-					entityManager.close();
-					entityManagerFactory.close();
 				}
-				if (password.equals(user.getPassword()))
+				if (application.passwordUtils.validatePassword(password,user.getPassword()))
 				{
-					//response.sendRedirect(request.getContextPath() + "/home.jsp");
 					destPage = "home.jsp";
 				}
 				else
@@ -80,6 +82,8 @@ public class login extends HttpServlet
 					request.setAttribute("username",username);
 				}
 			}
+			entityManager.close();
+			entityManagerFactory.close();
 			RequestDispatcher dispatcher = request.getRequestDispatcher(destPage);
 			dispatcher.forward(request,response);
 		}

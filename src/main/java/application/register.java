@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.PasswordAuthentication;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.Timestamp;
 
 
@@ -32,6 +35,7 @@ public class register extends HttpServlet
 		String fname = request.getParameter("fname");
 		String lname = request.getParameter("lname");
 		String email = request.getParameter("email");
+		String hashedPW = null;
 		boolean match = false;
 		boolean validUser = false;
 		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
@@ -39,6 +43,18 @@ public class register extends HttpServlet
 		EntityTransaction transaction = entityManager.getTransaction();
 		User user = new User();
 
+		try
+		{
+			hashedPW = application.passwordUtils.generateStrongPasswordHash(password);
+		}
+		catch (NoSuchAlgorithmException e)
+		{
+			e.printStackTrace();
+		}
+		catch (InvalidKeySpecException e)
+		{
+			e.printStackTrace();
+		}
 		try
 		{
 			String destPage = "register.jsp";
@@ -56,34 +72,26 @@ public class register extends HttpServlet
 					user = userFromDB.getSingleResult();
 					transaction.commit();
 				}
+				catch(Exception ex)
+				{
+					log("Null value returned user does not exist valid user for creation.");
+					request.setAttribute("username",username);
+					user = new User();
+					validUser = true;
+				}
 				finally
 				{
 					if(transaction.isActive())
 					{
 						transaction.rollback();
 					}
-					entityManager.close();
-					entityManagerFactory.close();
+					entityManager.clear();
 				}
 				if (user != null)
 				{
 					request.setAttribute("username_err","Username already exists");
 					request.setAttribute("username",username);
 				}
-				else
-				{
-					request.setAttribute("username",username);
-					validUser = true;
-				}
-				//if(user.getUsername().length() > 0)
-				//{
-				//	request.setAttribute("username_err","Username already exists");
-				//	request.setAttribute("username",username);
-				//}
-				//else
-				//{
-				//}
-				//Will have to look at persistence still on if a check should be made for an existing user here or just before trying to create a user.
 			}
 			if(isNullOrEmpty(password))
 			{
@@ -128,7 +136,7 @@ public class register extends HttpServlet
 					request.setAttribute("password_err","Passwords did not match");
 				}
 			}
-			if(!username.isEmpty() && !password.isEmpty() && !confirm_password.isEmpty() && !fname.isEmpty() && !lname.isEmpty() && !email.isEmpty() && match && validUser)
+			if(!username.isEmpty() && !password.isEmpty() && !confirm_password.isEmpty() && !fname.isEmpty() && !lname.isEmpty() && !email.isEmpty() && match && validUser && !(isNullOrEmpty(hashedPW)))
 			{
 				//If validation for a username not already existing (based on username) then create.
 				//Create DB user here
@@ -140,8 +148,8 @@ public class register extends HttpServlet
 					user.setFirstName(fname);
 					user.setLastName(lname);
 					user.setEmail(email);
-					user.setPassword(password);
-					user.setCreateTime(new Timestamp(System.currentTimeMillis()));
+					user.setPassword(hashedPW);
+					user.setCreateTime(new Timestamp(System.currentTimeMillis()).toString());
 					entityManager.persist(user);
 					transaction.commit();
 				}
@@ -151,8 +159,7 @@ public class register extends HttpServlet
 					{
 						transaction.rollback();
 					}
-					entityManager.close();
-					entityManagerFactory.close();
+					entityManager.clear();
 				}
 
 			}
@@ -161,6 +168,9 @@ public class register extends HttpServlet
 				String register_err = "<span class='spnError'>Please correct the below issues and try again</span>";
 				request.setAttribute("register_err",register_err);
 			}
+
+			entityManager.close();
+			entityManagerFactory.close();
 			RequestDispatcher dispatcher = request.getRequestDispatcher(destPage);
 			dispatcher.forward(request,response);
 

@@ -9,8 +9,26 @@
     <link href="sources/styles.css" rel="stylesheet">
 </head>
 <body>
-<h1><%= "You have successfully logged in" %></h1>
-<br/>
-<br>
+<table>
+<%
+Cookie cookie = null;
+Cookie[] cookies = null;
+cookies = request.getCookies();
+boolean loggedIn = false;
+
+for(int i = 0; i < cookies.length; i++)
+{
+	cookie = cookies[i];
+	if(cookie.getName().equals("user"))
+    {
+		loggedIn = true;
+    }
+}
+if(!loggedIn)
+{
+	out.print("<jsp:forward page=\"index.jsp\"/>");
+}
+%>
+</table>
 </body>
 </html>

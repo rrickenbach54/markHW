@@ -9,8 +9,6 @@
     <link href="sources/styles.css" rel="stylesheet">
 </head>
 <body>
-<h1><%= "You have successfully logged in" %></h1>
-<br/>
-<br>
+TO DO STILL IMPLEMENT SESSION TO NOT ALLOW A USER HERE IF THEY ARE NOT AUTHENTICATED
 </body>
 </html>

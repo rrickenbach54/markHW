@@ -14,8 +14,7 @@ public class User
 	private String lastName;
 	private String email;
 	private String password;
-	private Timestamp createTime;
-	private Timestamp lastLogin;
+	private String createTime;
 
 	@Id
 	@Column(name = "user_id")
@@ -92,27 +91,16 @@ public class User
 
 	@Basic
 	@Column(name = "create_time")
-	public Timestamp getCreateTime()
+	public String getCreateTime()
 	{
 		return createTime;
 	}
 
-	public void setCreateTime(Timestamp createTime)
+	public void setCreateTime(String createTime)
 	{
 		this.createTime = createTime;
 	}
 
-	@Basic
-	@Column(name = "last_login")
-	public Timestamp getLastLogin()
-	{
-		return lastLogin;
-	}
-
-	public void setLastLogin(Timestamp lastLogin)
-	{
-		this.lastLogin = lastLogin;
-	}
 
 	@Override
 	public boolean equals(Object o)
@@ -156,10 +144,6 @@ public class User
 		{
 			return false;
 		}
-		if (lastLogin != null ? !lastLogin.equals(user.lastLogin) : user.lastLogin != null)
-		{
-			return false;
-		}
 
 		return true;
 	}
@@ -174,7 +158,7 @@ public class User
 		result = 31 * result + (email != null ? email.hashCode() : 0);
 		result = 31 * result + (password != null ? password.hashCode() : 0);
 		result = 31 * result + (createTime != null ? createTime.hashCode() : 0);
-		result = 31 * result + (lastLogin != null ? lastLogin.hashCode() : 0);
 		return result;
 	}
+
 }
