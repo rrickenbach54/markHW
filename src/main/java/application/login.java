@@ -93,10 +93,13 @@ public class login extends HttpServlet
 				}
 
 			}
-			//entityManager.close();
-			//entityManagerFactory.close();
-			RequestDispatcher dispatcher = request.getRequestDispatcher(destPage);
-			dispatcher.forward(request,response);
+			//The old way here was forwarding the request. This caused an issue because cookies are
+			//being added to the response so they would only be available in subsequent requests.
+			//Thus the behavior of having to login twice. This new option redirects the current request
+			//so it is same session and resolves this.
+			//RequestDispatcher dispatcher = request.getRequestDispatcher(destPage);
+			//dispatcher.forward(request,response);
+			response.sendRedirect(destPage);
 		}
 		catch (Exception ex)
 		{
