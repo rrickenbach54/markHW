@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -63,6 +64,25 @@ public class login extends HttpServlet
 					userFromDB.setParameter(1,username);
 					user = userFromDB.getSingleResult();
 					transaction.commit();
+					if (application.passwordUtils.validatePassword(password,user.getPassword()))
+					{
+						destPage = "home.jsp";
+						response.addCookie(cookieBuilder("username",user.getUsername()));
+						response.addCookie(cookieBuilder("firstName",user.getFirstName()));
+						response.addCookie(cookieBuilder("loggedIn","True"));
+					}
+					else
+					{
+						String errorLogin = "<span class='spnError'>Invalid Login: Please Try Again</span>";
+						request.setAttribute("errorLogin", errorLogin);
+						request.setAttribute("username",username);
+					}
+				}
+				catch (Exception ex)
+				{
+					String errorLogin = "<span class='spnError'>Invalid Login: Please Try Again</span>";
+					request.setAttribute("errorLogin", errorLogin);
+					request.setAttribute("username",username);
 				}
 				finally
 				{
@@ -71,19 +91,10 @@ public class login extends HttpServlet
 						transaction.rollback();
 					}
 				}
-				if (application.passwordUtils.validatePassword(password,user.getPassword()))
-				{
-					destPage = "home.jsp";
-				}
-				else
-				{
-					String errorLogin = "<span class='spnError'>Invalid Login: Please Try Again</span>";
-					request.setAttribute("errorLogin", errorLogin);
-					request.setAttribute("username",username);
-				}
+
 			}
-			entityManager.close();
-			entityManagerFactory.close();
+			//entityManager.close();
+			//entityManagerFactory.close();
 			RequestDispatcher dispatcher = request.getRequestDispatcher(destPage);
 			dispatcher.forward(request,response);
 		}
@@ -91,6 +102,13 @@ public class login extends HttpServlet
 		{
 			throw new ServletException(ex);
 		}
+	}
+
+	public Cookie cookieBuilder(String cookieName, String value)
+	{
+		Cookie cookie = new Cookie(cookieName,value);
+		cookie.setHttpOnly(true);
+		return cookie;
 	}
 
 	public void destroy()

@@ -169,8 +169,8 @@ public class register extends HttpServlet
 				request.setAttribute("register_err",register_err);
 			}
 
-			entityManager.close();
-			entityManagerFactory.close();
+			//entityManager.close();
+			//entityManagerFactory.close();
 			RequestDispatcher dispatcher = request.getRequestDispatcher(destPage);
 			dispatcher.forward(request,response);
 

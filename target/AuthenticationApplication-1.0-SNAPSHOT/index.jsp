@@ -6,7 +6,7 @@
     <link href="sources/styles.css" rel="stylesheet">
 </head>
 <body>
-<img src="sources/DeltaGreenLogoTrans.png" class="centerImage">"
+<img src="sources/DeltaGreenLogoTrans.png" class="centerImage">
 <br/>
     <form class='frmLogin' autocomplete='off' method='post' action='login'>
     <label for='username' class='lblLoginHeader'> Login </label>
